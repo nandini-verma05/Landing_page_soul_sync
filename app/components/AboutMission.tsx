@@ -78,17 +78,7 @@ const AboutMission = () => {
   return (
     <main className="relative flex flex-col overflow-hidden">
       {/* --- Single Full Background Image --- */}
-      <div className="absolute inset-0 -z-10">
-        <Image
-          src="/AboutImage/bg.jpg" // 🔹 replace with your preferred image
-          alt="Background"
-          fill
-          className="object-cover object-center"
-          priority
-        />
-        {/* Optional overlay for better text visibility */}
-        <div className="absolute inset-0 bg-black/80" />
-      </div>
+    
 
       {/* ---------------------- ABOUT SECTION ---------------------- */}
       <section
