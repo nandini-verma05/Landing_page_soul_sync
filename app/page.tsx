@@ -6,7 +6,7 @@ import Carousel from './components/Carousel';
 import Video from './components/vdo';
 import Works from './components/Works';
 import AboutMission from './components/AboutMission';
-
+import VideoCarousel from './components/VideoCrousal';
 export default function Home() {
   return (
     <main >
@@ -27,18 +27,16 @@ export default function Home() {
      
         <AboutMission />
     
-
-  
-      
-        <Carousel />
-  
-
-    
-        <BlogSection />
-    
-
+<VideoCarousel />
      
-        <FAQsection />
+
+      <Carousel />
+
+
+      <BlogSection />
+
+
+      <FAQsection />
   
 
   

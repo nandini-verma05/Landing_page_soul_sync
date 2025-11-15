@@ -2,21 +2,37 @@
 
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
+import { Github, Linkedin, Twitter, Instagram } from "lucide-react";
 
 const AboutMission = () => {
   const aboutRef = useRef<HTMLDivElement | null>(null);
   const missionRef = useRef<HTMLDivElement | null>(null);
+
   const [aboutProgress, setAboutProgress] = useState(0);
   const [aboutReveal, setAboutReveal] = useState(0);
   const [missionReveal, setMissionReveal] = useState(0);
+
+  // One-time enter animations
+  const [aboutEntered, setAboutEntered] = useState(false);
+  const [missionEntered, setMissionEntered] = useState(false);
 
   // ABOUT section scroll handler
   useEffect(() => {
     const handleScroll = () => {
       if (!aboutRef.current) return;
+
       const rect = aboutRef.current.getBoundingClientRect();
       const windowHeight = window.innerHeight;
 
+      // Enter / exit trigger
+      const visible = Math.max(0, windowHeight - rect.top);
+      const total = rect.height + windowHeight;
+      const ratio = Math.min(Math.max(visible / total, 0), 1);
+
+      if (ratio > 0.2 && !aboutEntered) setAboutEntered(true);
+      if (ratio < 0.05 && aboutEntered) setAboutEntered(false);
+
+      // Image animation progress
       if (rect.top < windowHeight && rect.bottom > 0) {
         const totalVisible = windowHeight + rect.height;
         const scrollRatio = 1 - rect.bottom / totalVisible;
@@ -24,33 +40,37 @@ const AboutMission = () => {
         setAboutProgress(normalized);
       }
 
-      const visible = Math.max(0, windowHeight - rect.top);
-      const total = rect.height + windowHeight;
-      const ratio = Math.min(Math.max(visible / total, 0), 1);
       setAboutReveal(ratio);
     };
 
     window.addEventListener("scroll", handleScroll);
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [aboutEntered]);
 
   // MISSION section scroll reveal
   useEffect(() => {
     const handleScroll = () => {
       if (!missionRef.current) return;
+
       const rect = missionRef.current.getBoundingClientRect();
       const windowHeight = window.innerHeight;
+
+      // Enter / exit trigger
       const visible = Math.max(0, windowHeight - rect.top);
       const total = rect.height + windowHeight;
       const ratio = Math.min(Math.max(visible / total, 0), 1);
+
+      if (ratio > 0.2 && !missionEntered) setMissionEntered(true);
+      if (ratio < 0.05 && missionEntered) setMissionEntered(false);
+
       setMissionReveal(ratio);
     };
 
     window.addEventListener("scroll", handleScroll);
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [missionEntered]);
 
   // Animated styles for AboutSection images
   const leftImageStyle = {
@@ -75,10 +95,15 @@ const AboutMission = () => {
     transition: "transform 0.6s ease-out, opacity 0.6s ease-out",
   };
 
+  const socialIcons = [
+    { icon: Instagram, label: "Instagram" },
+    { icon: Twitter, label: "Twitter" },
+    { icon: Linkedin, label: "LinkedIn" },
+    { icon: Github, label: "GitHub" },
+  ];
+
   return (
     <main className="relative flex flex-col overflow-hidden">
-      {/* --- Single Full Background Image --- */}
-    
 
       {/* ---------------------- ABOUT SECTION ---------------------- */}
       <section
@@ -86,7 +111,11 @@ const AboutMission = () => {
         className="relative flex flex-col md:flex-row justify-between items-center px-8 md:px-24 py-24 text-white overflow-hidden min-h-screen"
       >
         {/* LEFT TEXT CONTENT */}
-        <div className="relative z-10 max-w-lg text-left space-y-8">
+        <div
+          className={`relative z-10 max-w-lg text-left space-y-8 transition-all duration-[900ms]
+            ${aboutEntered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}
+          `}
+        >
           <span className="text-xs tracking-widest uppercase bg-neutral-800 px-4 py-1 rounded-full w-fit text-white/80">
             💞 About
           </span>
@@ -101,7 +130,7 @@ const AboutMission = () => {
 
           <p className="text-white/70 text-sm md:text-base tracking-wide leading-relaxed">
             Go beyond your social circle, and connect with people near and far.
-            You’re about to have the best online dating experience – all you
+            You're about to have the best online dating experience – all you
             need are some good pics and a solid bio to stand out. Let the stars
             guide your next match.
           </p>
@@ -113,40 +142,22 @@ const AboutMission = () => {
 
         {/* RIGHT IMAGE STACK */}
         <div className="relative w-full md:w-1/2 flex justify-center mt-16 md:mt-0 perspective-[1000px] z-10">
-          {/* Left image */}
           <div
             className="absolute w-64 h-96 rounded-2xl overflow-hidden shadow-2xl"
             style={leftImageStyle}
           >
-            <Image
-              src="/AboutImage/image2.jpg"
-              alt="Profile 2"
-              fill
-              className="object-cover"
-            />
+            <Image src="/AboutImage/image2.jpg" alt="Profile 2" fill className="object-cover" />
           </div>
 
-          {/* Center image */}
           <div className="relative w-64 h-96 rounded-2xl overflow-hidden shadow-2xl z-10 border border-white/10">
-            <Image
-              src="/AboutImage/image1.jpg"
-              alt="Profile 1"
-              fill
-              className="object-cover"
-            />
+            <Image src="/AboutImage/image1.jpg" alt="Profile 1" fill className="object-cover" />
           </div>
 
-          {/* Right image */}
           <div
             className="absolute w-64 h-96 rounded-2xl overflow-hidden shadow-2xl"
             style={rightImageStyle}
           >
-            <Image
-              src="/AboutImage/image3.jpg"
-              alt="Profile 3"
-              fill
-              className="object-cover"
-            />
+            <Image src="/AboutImage/image3.jpg" alt="Profile 3" fill className="object-cover" />
           </div>
         </div>
       </section>
@@ -155,37 +166,43 @@ const AboutMission = () => {
       <section
         ref={missionRef}
         id="mission-section"
-        className="relative flex flex-col md:flex-row justify-center items-center overflow-hidden min-h-screen px-8 md:px-24 text-white"
+        className="relative flex flex-col md:flex-row justify-center items-center overflow-visible min-h-screen px-8 md:px-24 text-white"
       >
         {/* LEFT PERSON */}
         <div className="relative flex flex-col items-center z-20 mb-12 md:mb-0">
           <div className="relative w-72 h-[420px] rounded-3xl overflow-hidden shadow-2xl border border-white/10">
-            <Image
-              src="/AboutImage/image2.jpg"
-              alt="Left User"
-              fill
-              className="object-cover"
-            />
+            <Image src="/AboutImage/image2.jpg" alt="Left User" fill className="object-cover" />
           </div>
-
-          {/* Floating Spotify card */}
-          <div className="absolute top-10 -left-12 bg-white/90 backdrop-blur-md text-black px-4 py-3 rounded-2xl shadow-lg flex items-center gap-3 w-52 hover:scale-105 transition-transform">
-            <Image
-              src="/icons/spotify.png"
-              alt="Spotify"
-              width={24}
-              height={24}
-              className="rounded-full"
-            />
-            <div>
-              <p className="font-semibold text-sm">Spotify</p>
-              <p className="text-xs text-gray-500">14 Common Songs</p>
-            </div>
+          
+          {/* LEFT SIDE SOCIALS */}
+          <div className="absolute -left-8 top-1/2 -translate-y-1/2 flex flex-col gap-4 z-30">
+            {socialIcons.slice(0, 2).map((social, idx) => {
+              const Icon = social.icon;
+              return (
+                <div
+                  key={idx}
+                  className={`transition-all duration-[900ms] transform ${
+                    missionEntered
+                      ? "opacity-100 translate-x-0"
+                      : "opacity-0 translate-x-8"
+                  }`}
+                  style={{ transitionDelay: `${idx * 150}ms` }}
+                >
+                  <button className="px-5 py-4 rounded-xl bg-white hover:bg-white/90 shadow-lg hover:shadow-2xl flex items-center justify-center transition-all group">
+                    <Icon className="w-6 h-6 text-black group-hover:scale-110 transition-transform" />
+                  </button>
+                </div>
+              );
+            })}
           </div>
         </div>
 
         {/* MISSION TEXT */}
-        <div className="flex flex-col items-center text-center px-8 mt-10 md:mt-0 space-y-6 z-20">
+        <div
+          className={`flex flex-col items-center text-center px-8 mt-10 md:mt-0 md:mx-12 space-y-6 z-20 transition-all duration-[900ms]
+            ${missionEntered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}
+          `}
+        >
           <span className="text-xs tracking-widest uppercase bg-neutral-800 px-4 py-1 rounded-full text-white/80">
             💞 Our Mission
           </span>
@@ -195,47 +212,38 @@ const AboutMission = () => {
             <span className="italic font-semibold text-white">Love.</span>
           </h1>
           <p className="text-white/70 text-sm md:text-base max-w-lg tracking-wide leading-relaxed">
-            At Soul Syn, our mission is to bridge hearts through shared passions
-            — from your favorite playlists to your go-to binge-worthy shows. Let
-            every common interest bring you closer.
+            At Soul Syn, our mission is to bridge hearts through shared passions —
+            from your favorite playlists to your go-to binge-worthy shows. Let every
+            common interest bring you closer.
           </p>
         </div>
 
         {/* RIGHT PERSON */}
         <div className="relative flex flex-col items-center z-20 mt-12 md:mt-0">
           <div className="relative w-72 h-[420px] rounded-3xl overflow-hidden shadow-2xl border border-white/10">
-            <Image
-              src="/AboutImage/image3.jpg"
-              alt="Right User"
-              fill
-              className="object-cover"
-            />
+            <Image src="/AboutImage/image3.jpg" alt="Right User" fill className="object-cover" />
           </div>
-
-          {/* Floating Netflix card */}
-          <div className="absolute top-10 -right-12 bg-white/90 backdrop-blur-md text-black px-4 py-3 rounded-2xl shadow-lg flex items-center gap-3 w-52 hover:scale-105 transition-transform">
-            <Image
-              src="/icons/netflix.png"
-              alt="Netflix"
-              width={24}
-              height={24}
-            />
-            <div>
-              <p className="font-semibold text-sm">Netflix</p>
-              <p className="text-xs text-gray-500">4 Common Movies</p>
-            </div>
-          </div>
-
-          {/* Floating Places card */}
-          <div className="absolute -bottom-8 bg-white/90 backdrop-blur-md text-black px-4 py-3 rounded-2xl shadow-lg flex items-center gap-3 w-56 hover:scale-105 transition-transform">
-            <Image src="/icons/places.png" alt="Places" width={24} height={24} />
-            <div>
-              <p className="font-semibold text-sm">Favorite Places</p>
-              <p className="text-xs text-gray-500">2 Common Spots</p>
-            </div>
-            <span className="ml-auto bg-black text-white text-xs rounded-full px-2 py-1">
-              30k
-            </span>
+          
+          {/* RIGHT SIDE SOCIALS */}
+          <div className="absolute -right-8 top-1/2 -translate-y-1/2 flex flex-col gap-4 z-30">
+            {socialIcons.slice(2, 4).map((social, idx) => {
+              const Icon = social.icon;
+              return (
+                <div
+                  key={idx}
+                  className={`transition-all duration-[900ms] transform ${
+                    missionEntered
+                      ? "opacity-100 translate-x-0"
+                      : "opacity-0 -translate-x-8"
+                  }`}
+                  style={{ transitionDelay: `${(idx + 2) * 150}ms` }}
+                >
+                  <button className="px-5 py-4 rounded-xl bg-white hover:bg-white/90 shadow-lg hover:shadow-2xl flex items-center justify-center transition-all group">
+                    <Icon className="w-6 h-6 text-black group-hover:scale-110 transition-transform" />
+                  </button>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
