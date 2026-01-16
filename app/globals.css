@@ -57,3 +57,15 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+.glass-input {
+  @apply w-full rounded-lg bg-transparent
+         border border-white/30
+         px-3 py-2 text-sm text-white
+         outline-none transition
+         placeholder:text-white/40
+         focus:border-white;
+}

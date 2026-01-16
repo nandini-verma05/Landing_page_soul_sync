@@ -1,10 +1,12 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
-import { Github, Linkedin, Twitter, Instagram } from "lucide-react";
-
+import { Linkedin, Instagram, X, Facebook } from "lucide-react";
+import VideoCarousel from "./VideoCrousal";
 const AboutMission = () => {
+  const router = useRouter();
   const aboutRef = useRef<HTMLDivElement | null>(null);
   const missionRef = useRef<HTMLDivElement | null>(null);
 
@@ -15,6 +17,23 @@ const AboutMission = () => {
   // One-time enter animations
   const [aboutEntered, setAboutEntered] = useState(false);
   const [missionEntered, setMissionEntered] = useState(false);
+
+  // Threads Icon SVG Component
+  const ThreadsIcon = () => (
+    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+      <path d="M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/>
+    </svg>
+  );
+
+  const socialIcons = [
+    { icon: Instagram, label: "Instagram", url: " https://www.instagram.com/_lovitche_?igsh=bjdqZzJuZ3BkYjU5" },
+    { icon: X, label: "X", url: "https://x.com/Lovitche_?t=eG8p4F_M_Zflnc9vR2mnMg&s=09" },
+    { icon: Linkedin, label: "LinkedIn", url: "https://www.linkedin.com/in/love-mantrraa-385593397" },
+    { icon: Facebook, label: "Facebook", url: "https://www.facebook.com/share/14WWooFre67/" },
+    { icon: ThreadsIcon, label: "Threads", url: " https://www.threads.com/@_lovitche_" },
+  ];
+
 
   // ABOUT section scroll handler
   useEffect(() => {
@@ -95,12 +114,9 @@ const AboutMission = () => {
     transition: "transform 0.6s ease-out, opacity 0.6s ease-out",
   };
 
-  const socialIcons = [
-    { icon: Instagram, label: "Instagram" },
-    { icon: Twitter, label: "Twitter" },
-    { icon: Linkedin, label: "LinkedIn" },
-    { icon: Github, label: "GitHub" },
-  ];
+  const handleSocialClick = (url: string) => {
+    window.open(url, "_blank");
+  };
 
   return (
     <main className="relative flex flex-col overflow-hidden">
@@ -124,7 +140,7 @@ const AboutMission = () => {
             <span className="italic font-semibold text-white">Match.</span>{" "}
             <span className="italic font-semibold text-white">Chat.</span>{" "}
             <span className="italic font-semibold text-white">Meet.</span>{" "}
-            <span className="text-white/80">Soul Syn</span>
+            <span className="text-white/80">  Lovitché</span>
             <sup className="align-top text-2xl font-light">®</sup>
           </h1>
 
@@ -135,7 +151,7 @@ const AboutMission = () => {
             guide your next match.
           </p>
 
-          <button className="border border-white/30 hover:border-white transition-all px-8 py-3 rounded-full text-sm tracking-widest uppercase text-white/80 hover:text-white hover:shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+          <button onClick={() => router.push('/form')} className="border border-white/30 hover:border-white transition-all px-8 py-3 rounded-full text-sm tracking-widest uppercase text-white/80 hover:text-white hover:shadow-[0_0_15px_rgba(255,255,255,0.2)]">
             Join Now
           </button>
         </div>
@@ -188,7 +204,7 @@ const AboutMission = () => {
                   }`}
                   style={{ transitionDelay: `${idx * 150}ms` }}
                 >
-                  <button className="px-5 py-4 rounded-xl bg-white hover:bg-white/90 shadow-lg hover:shadow-2xl flex items-center justify-center transition-all group">
+                  <button onClick={() => handleSocialClick(social.url)} className="px-5 py-4 rounded-xl bg-white hover:bg-white/90 shadow-lg hover:shadow-2xl flex items-center justify-center transition-all group">
                     <Icon className="w-6 h-6 text-black group-hover:scale-110 transition-transform" />
                   </button>
                 </div>
@@ -212,7 +228,7 @@ const AboutMission = () => {
             <span className="italic font-semibold text-white">Love.</span>
           </h1>
           <p className="text-white/70 text-sm md:text-base max-w-lg tracking-wide leading-relaxed">
-            At Soul Syn, our mission is to bridge hearts through shared passions —
+            At   Lovitché, our mission is to bridge hearts through shared passions —
             from your favorite playlists to your go-to binge-worthy shows. Let every
             common interest bring you closer.
           </p>
@@ -238,7 +254,7 @@ const AboutMission = () => {
                   }`}
                   style={{ transitionDelay: `${(idx + 2) * 150}ms` }}
                 >
-                  <button className="px-5 py-4 rounded-xl bg-white hover:bg-white/90 shadow-lg hover:shadow-2xl flex items-center justify-center transition-all group">
+                  <button onClick={() => handleSocialClick(social.url)} className="px-5 py-4 rounded-xl bg-white hover:bg-white/90 shadow-lg hover:shadow-2xl flex items-center justify-center transition-all group">
                     <Icon className="w-6 h-6 text-black group-hover:scale-110 transition-transform" />
                   </button>
                 </div>
@@ -247,6 +263,9 @@ const AboutMission = () => {
           </div>
         </div>
       </section>
+        <section className="snap-start h-screen">
+          <VideoCarousel />
+        </section>
     </main>
   );
 };
