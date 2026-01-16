@@ -50,7 +50,7 @@ const FAQsection: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section className="min-h-screen w-full bg-black text-white flex flex-col lg:flex-row justify-center items-center gap-16 py-24 px-8 md:px-24">
+    <section id="faq-section" className="min-h-screen w-full bg-black text-white flex flex-col lg:flex-row justify-center items-center gap-16 py-24 px-8 md:px-24">
 
       {/* Soft background aura */}
       <div className="absolute inset-0 opacity-10 pointer-events-none">
@@ -95,9 +95,7 @@ const FAQsection: React.FC = () => {
         </div>
 
         {/* CTA BUTTON */}
-        <button className="ss-button mt-4">
-          Book a Free Call
-        </button>
+       
       </div>
 
       {/* RIGHT Section - FAQs */}

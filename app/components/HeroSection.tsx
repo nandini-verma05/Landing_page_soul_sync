@@ -117,7 +117,15 @@ export default function LightStudiesHero() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleThumbnailClick = (index) => {
+  interface HeroImage {
+    id: number;
+    img: string;
+    quote: string;
+    body: string;
+    boldQuote: string;
+  }
+
+  const handleThumbnailClick = (index: number): void => {
     if (index !== currentIndex) {
       setIsExiting(true);
       setTimeout(() => {
@@ -130,7 +138,8 @@ export default function LightStudiesHero() {
   const currentImage = images[currentIndex];
 
   return (
-    <section className="relative w-full min-h-screen text-white overflow-hidden px-10 py-20 flex items-center">
+<section className="relative w-full h-screen text-white overflow-hidden px-10 py-20 flex items-center">
+
       <style>{fadeInUp}</style>
       {/* BACKGROUND IMAGE */}
       <div className="absolute inset-0 -z-10">
@@ -158,7 +167,7 @@ export default function LightStudiesHero() {
       {/* MAIN CENTER PORTRAIT */}
       <div className="w-1/2 relative flex justify-end pr-10">
         <div className="relative w-[420px] h-[520px] rounded-lg overflow-hidden shadow-2xl transition-all duration-700">
-          <Image src={currentImage.img} fill className="object-cover" />
+          <Image src={currentImage.img} alt="hero image" fill className="object-cover" />
           {/* BOLD QUOTE OVERLAY */}
           <div className={`absolute inset-0 flex items-center justify-center bg-black/30 ${isExiting ? 'quote-exit' : 'quote-enter'}`}>
             <p className="text-center text-white font-bold text-2xl px-6 leading-relaxed max-w-xs drop-shadow-lg">
@@ -186,7 +195,7 @@ export default function LightStudiesHero() {
                 }
               `}
             >
-              <Image src={item.img} fill className="object-cover" />
+              <Image src={item.img} alt= "image" fill className="object-cover" />
             </div>
           </div>
         ))}

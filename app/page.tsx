@@ -10,37 +10,30 @@ import VideoCarousel from './components/VideoCrousal';
 export default function Home() {
   return (
     <main >
-    <div className="h-screen w-full snap-y snap-mandatory overflow-y-scroll scroll-smooth">
+    <div className="  h-screen
+        overflow-y-scroll
+        scroll-snap-type-y-mandatory
+        scroll-smooth
+      ">
 
       {/* FULL-PAGE SNAP SECTIONS */}
-      <section className="snap-start h-screen">
+      <section className="h-screen scroll-snap-align-start ">
         <HeroSection />
       </section>
 
-      <section className="snap-start h-screen">
+      <section className="h-screen">
         <Video />
       </section>
    </div>
-      
-        <Works />
 
+          <AboutMission />
      
-        <AboutMission />
-    
-<VideoCarousel />
      
-
-      <Carousel />
-
-
+     
+   
       <BlogSection />
-
-
       <FAQsection />
-  
-
-  
-        <Footer />
+      <Footer />
      
 
  </main>
