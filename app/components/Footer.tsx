@@ -12,7 +12,6 @@ import {
   Instagram,
   Facebook,
   Linkedin,
-  
   X,
 } from "lucide-react";
 
@@ -262,7 +261,6 @@ export default function Footer() {
                   <ul className="space-y-5">
                     {[
                       { icon: Heart, text: "Start Your Journey" },
-                    ,
                       { icon: MessageCircle, text: "Contact Us" },
                       { icon: MessageCircle, text: "FAQ" },
                     ].map((item, index) => (
