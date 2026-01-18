@@ -63,7 +63,7 @@ export default function Video() {
         ${visible ? "opacity-40" : "opacity-0"}
         pointer-events-none`}
       >
-        Lovitché
+      Lovitché  
       </h1>
 
       {/* ---------------------- TOP LEFT QUOTE ---------------------- */}
