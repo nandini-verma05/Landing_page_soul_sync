@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <main >
     <div className="  h-screen
-        overflow-y-scroll
+        overflow-hidden
         scroll-snap-type-y-mandatory
         scroll-smooth
       ">
