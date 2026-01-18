@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
+import fs from "fs/promises"; // ← better to use promises version
 import path from "path";
+import { sendRegistrationEmail } from "@/lib/mailer";
 
 export async function POST(req: Request) {
   try {
@@ -15,13 +16,14 @@ export async function POST(req: Request) {
       email,
     } = body;
 
+    // Better validation
     if (
-      !name ||
-      !placeOfBirth ||
-      !timeOfBirth ||
-      !timeOfBirthPeriod ||
-      !dateOfBirth ||
-      !email
+      !name?.trim() ||
+      !placeOfBirth?.trim() ||
+      !timeOfBirth?.trim() ||
+      !timeOfBirthPeriod?.trim() ||
+      !dateOfBirth?.trim() ||
+      !email?.trim()
     ) {
       return NextResponse.json(
         { success: false, message: "All fields are required" },
@@ -31,51 +33,79 @@ export async function POST(req: Request) {
 
     const filePath = path.join(process.cwd(), "data", "birthDetails.json");
 
-    if (!fs.existsSync(path.dirname(filePath))) {
-      fs.mkdirSync(path.dirname(filePath), { recursive: true });
+    // Ensure directory exists
+    await fs.mkdir(path.dirname(filePath), { recursive: true });
+
+    let jsonData: any[] = [];
+
+    try {
+      const fileContent = await fs.readFile(filePath, "utf-8");
+      const parsed = JSON.parse(fileContent);
+
+      if (!Array.isArray(parsed)) {
+        console.warn("birthDetails.json was not an array → resetting");
+        jsonData = [];
+      } else {
+        jsonData = parsed;
+      }
+    } catch (err: any) {
+      // File doesn't exist OR invalid JSON → start with empty array
+      if (err.code !== "ENOENT") {
+        console.warn("Invalid JSON in birthDetails.json:", err.message);
+      }
+      jsonData = [];
     }
 
-    // Read existing data
-    const fileData = fs.existsSync(filePath)
-      ? fs.readFileSync(filePath, "utf-8")
-      : "[]";
-
-    const jsonData: any[] = JSON.parse(fileData);
-
+    // Check duplicate (case-insensitive)
+    const emailLower = email.toLowerCase().trim();
     const emailExists = jsonData.some(
-      (entry) => entry.email.toLowerCase() === email.toLowerCase()
+      (entry) => entry?.email?.toLowerCase?.() === emailLower
     );
 
     if (emailExists) {
       return NextResponse.json(
-        {
-          success: false,
-          message: "This email is already registered",
-        },
-        { status: 409 } // Conflict
+        { success: false, message: "This email is already registered" },
+        { status: 409 }
       );
     }
 
-  jsonData.push({
-      name,
-      placeOfBirth,
-      timeOfBirth,
-      timeOfBirthPeriod,
-      dateOfBirth,
-      email,
+    // Add new record
+    jsonData.push({
+      name: name.trim(),
+      placeOfBirth: placeOfBirth.trim(),
+      timeOfBirth: timeOfBirth.trim(),
+      timeOfBirthPeriod: timeOfBirthPeriod.trim(),
+      dateOfBirth: dateOfBirth.trim(),
+      email: email.trim(),
       createdAt: new Date().toISOString(),
     });
 
-    fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 2));
+    // Atomic write (safer)
+    await fs.writeFile(
+      filePath,
+      JSON.stringify(jsonData, null, 2) + "\n", // trailing newline is nice
+      "utf-8"
+    );
+
+    // Send email - don't fail the request if email fails
+    try {
+      await sendRegistrationEmail(email, name);
+    } catch (mailError) {
+      console.error("Email sending failed:", mailError);
+    }
 
     return NextResponse.json(
-      { success: true, message: "Data saved successfully" },
+      { success: true, message: "Registered successfully" },
       { status: 201 }
     );
-  } catch (error) {
-    console.error("Save error:", error);
+  } catch (error: any) {
+    console.error("Save birth details error:", error);
     return NextResponse.json(
-      { success: false, message: "Failed to save data" },
+      {
+        success: false,
+        message: "Failed to save data",
+        error: process.env.NODE_ENV === "development" ? error.message : undefined,
+      },
       { status: 500 }
     );
   }

@@ -2,40 +2,32 @@ import HeroSection from './components/HeroSection';
 import FAQsection from './components/FAQsection';
 import Footer from './components/Footer';
 import BlogSection from './components/BlogSection';
-import Carousel from './components/Carousel';
 import Video from './components/vdo';
-import Works from './components/Works';
 import AboutMission from './components/AboutMission';
-import VideoCarousel from './components/VideoCrousal';
+
 export default function Home() {
   return (
-    <main >
-    <div className="  h-screen
-        overflow-hidden
-        scroll-snap-type-y-mandatory
-        scroll-smooth
-      ">
-
-      {/* FULL-PAGE SNAP SECTIONS */}
-      <section className="h-screen scroll-snap-align-start ">
+    <main className="snap-y snap-mandatory overflow-y-auto scrollbar-hide">
+      <section className="h-screen snap-start">
         <HeroSection />
       </section>
-
-      <section className="h-screen">
-        <Video />
+      <section className="h-screen w-full snap-start flex items-center justify-center overflow-hidden">
+        <div className="w-full h-full">
+          <Video />
+        </div>
       </section>
-   </div>
-
-          <AboutMission />
-     
-     
-     
-   
-      <BlogSection />
-      <FAQsection />
-      <Footer />
-     
-
- </main>
+      <section className="snap-start">
+        <AboutMission />
+      </section>
+      <section className="snap-start">
+        <BlogSection />
+      </section>
+      <section className="snap-start">
+        <FAQsection />
+      </section>
+      <section className="snap-start">
+        <Footer />
+      </section>
+    </main>
   );
 }
