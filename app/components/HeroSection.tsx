@@ -3,26 +3,26 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 const fadeInUp = `
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes fadeOutDown {
-  from { opacity: 1; transform: translateY(0); }
-  to { opacity: 0; transform: translateY(20px); }
-}
-@keyframes fadeInScale {
-  from { opacity: 0; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1); }
-}
-@keyframes fadeOutScale {
-  from { opacity: 1; transform: scale(1); }
-  to { opacity: 0; transform: scale(0.9); }
-}
-.text-enter { animation: fadeInUp 0.8s ease-out; }
-.text-exit { animation: fadeOutDown 0.8s ease-out; }
-.quote-enter { animation: fadeInScale 0.8s ease-out 0.2s both; }
-.quote-exit { animation: fadeOutScale 0.8s ease-out both; }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeOutDown {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(20px); }
+  }
+  @keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  @keyframes fadeOutScale {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0; transform: scale(0.9); }
+  }
+  .text-enter { animation: fadeInUp 0.8s ease-out; }
+  .text-exit { animation: fadeOutDown 0.8s ease-out; }
+  .quote-enter { animation: fadeInScale 0.8s ease-out 0.2s both; }
+  .quote-exit { animation: fadeOutScale 0.8s ease-out both; }
 `;
 
 const images = [
@@ -104,7 +104,15 @@ export default function LightStudiesHero() {
   const currentImage = images[currentIndex];
 
   return (
-    <section className="relative w-full min-h-screen text-white overflow-hidden px-4 sm:px-8 lg:px-10 py-16 lg:py-20 flex flex-col lg:flex-row items-center gap-12">
+    <section
+      className="
+        relative w-full min-h-screen text-white overflow-hidden
+        px-6 py-14
+        lg:px-10 lg:py-20
+        flex flex-col lg:flex-row
+        items-center
+      "
+    >
       <style>{fadeInUp}</style>
 
       {/* BACKGROUND */}
@@ -113,48 +121,84 @@ export default function LightStudiesHero() {
           src={currentImage.img}
           alt="Background"
           fill
-          className="object-cover opacity-40 blur-sm"
+          className="object-cover opacity-40 blur-sm transition-all duration-700"
         />
-        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 bg-black/40" />
       </div>
 
-      {/* TEXT */}
-      <div className="w-full lg:w-1/2 text-center lg:text-left space-y-5 z-10">
-        <p className="text-xs sm:text-sm uppercase tracking-widest text-gray-300">
+      {/* LEFT TEXT */}
+      <div
+        className="
+          w-full lg:w-1/2
+          space-y-5 z-10
+          text-center lg:text-left
+          mb-8 lg:mb-0
+        "
+      >
+        <p className="text-xs uppercase tracking-widest text-gray-300">
           Finding Love Through Destiny
         </p>
 
         <h1
-          className={`text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight transition-all ${
-            isExiting ? "text-exit" : "text-enter"
-          }`}
+          className={`
+            text-3xl sm:text-4xl lg:text-5xl
+            font-semibold leading-tight
+            transition-all duration-700
+            ${isExiting ? "text-exit" : "text-enter"}
+          `}
         >
           {currentImage.quote}
-          <span className="block text-sm text-gray-400 mt-2">
+          <span className="text-gray-400 block text-sm mt-2">
             [{currentImage.id}/6]
           </span>
         </h1>
 
         <p
-          className={`text-gray-300 text-sm sm:text-base max-w-md mx-auto lg:mx-0 transition-all ${
-            isExiting ? "text-exit" : "text-enter"
-          }`}
+          className={`
+            text-gray-300 max-w-md mx-auto lg:mx-0
+            text-sm leading-relaxed
+            transition-all duration-700
+            ${isExiting ? "text-exit" : "text-enter"}
+          `}
         >
           {currentImage.body}
         </p>
       </div>
 
-      {/* IMAGE */}
-      <div className="w-full lg:w-1/2 flex justify-center lg:justify-end">
-        <div className="relative w-[260px] h-[360px] sm:w-[320px] sm:h-[440px] lg:w-[420px] lg:h-[520px] rounded-lg overflow-hidden shadow-2xl">
-          <Image src={currentImage.img} alt="Hero" fill className="object-cover" />
+      {/* CENTER PORTRAIT */}
+      <div className="w-full lg:w-1/2 flex justify-center lg:justify-end lg:pr-10">
+        <div
+          className="
+            relative
+            w-[260px] h-[360px]
+            sm:w-[320px] sm:h-[440px]
+            lg:w-[420px] lg:h-[520px]
+            rounded-lg overflow-hidden shadow-2xl
+            transition-all duration-700
+          "
+        >
+          <Image
+            src={currentImage.img}
+            alt="hero image"
+            fill
+            className="object-cover"
+          />
 
           <div
-            className={`absolute inset-0 bg-black/30 flex items-center justify-center ${
-              isExiting ? "quote-exit" : "quote-enter"
-            }`}
+            className={`
+              absolute inset-0 flex items-center justify-center
+              bg-black/30
+              ${isExiting ? "quote-exit" : "quote-enter"}
+            `}
           >
-            <p className="text-center font-bold text-lg sm:text-xl lg:text-2xl px-6">
+            <p
+              className="
+                text-center text-white font-bold
+                text-lg sm:text-xl lg:text-2xl
+                px-6 leading-relaxed
+                max-w-xs drop-shadow-lg
+              "
+            >
               {currentImage.boldQuote}
             </p>
           </div>
@@ -162,26 +206,41 @@ export default function LightStudiesHero() {
       </div>
 
       {/* THUMBNAILS */}
-      <div className="absolute bottom-6 w-full px-4">
-        <div className="flex gap-4 overflow-x-auto lg:justify-center scrollbar-hide">
-          {images.map((item, index) => (
+      <div
+        className="
+          mt-8
+          lg:absolute lg:bottom-10 lg:left-1/2 lg:-translate-x-1/2
+          w-full lg:w-auto
+          overflow-x-auto lg:overflow-visible
+          flex gap-4 px-4 lg:px-0
+          justify-start lg:justify-center
+        "
+      >
+        {images.map((item, index) => (
+          <div
+            key={item.id}
+            className="text-center text-gray-300 cursor-pointer shrink-0"
+            onClick={() => handleThumbnailClick(index)}
+          >
             <div
-              key={item.id}
-              onClick={() => handleThumbnailClick(index)}
-              className="flex-shrink-0 cursor-pointer"
-            >
-              <div
-                className={`relative w-28 h-20 sm:w-32 sm:h-24 rounded-md overflow-hidden transition-all ${
+              className={`
+                relative
+                w-28 h-20
+                sm:w-32 sm:h-22
+                lg:w-36 lg:h-24
+                rounded-md overflow-hidden shadow-lg
+                transition-all duration-300
+                ${
                   currentIndex === index
                     ? "ring-2 ring-white scale-105"
                     : "opacity-60 hover:opacity-100"
-                }`}
-              >
-                <Image src={item.img} alt="thumb" fill className="object-cover" />
-              </div>
+                }
+              `}
+            >
+              <Image src={item.img} alt="image" fill className="object-cover" />
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </section>
   );
