@@ -47,6 +47,7 @@ export default function Video() {
         poster="/images/poster.jpg"
         loop
         muted
+        autoPlay
         playsInline
         preload="auto"
         className="absolute inset-0 w-full h-full object-cover"
