@@ -1,173 +1,408 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { X } from "lucide-react";
+import { useState, useEffect } from 'react';
+import { Calendar as CalendarIcon, Clock as ClockIcon, X } from 'lucide-react';
 
 type FormData = {
   name: string;
   placeOfBirth: string;
+  dateOfBirth: string;
   timeOfBirth: string;
   timeOfBirthPeriod: string;
-  dateOfBirth: string;
   email: string;
 };
 
 export default function FormPage() {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<FormData>();
+  const [formData, setFormData] = useState<FormData>({
+    name: '',
+    placeOfBirth: '',
+    dateOfBirth: '',
+    timeOfBirth: '',
+    timeOfBirthPeriod: 'AM',
+    email: ''
+  });
+  
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showCalendarModal, setShowCalendarModal] = useState(false);
+  const [showTimeModal, setShowTimeModal] = useState(false);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [loading, setLoading] = useState(false);
 
-  const onSubmit = async (data: FormData) => {
-    try {
-      const res = await fetch("/api/save-birth-details", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+  const [time, setTime] = useState({
+    hour: 12,
+    minute: 0,
+    second: 0,
+    period: 'AM'
+  });
 
-      if (!res.ok) throw new Error("Failed");
+  // Sync time to form
+  useEffect(() => {
+    let hh = time.hour;
+    if (time.period === 'PM' && hh !== 12) hh += 12;
+    if (time.period === 'AM' && hh === 12) hh = 0;
 
-      reset();
-      alert("Details saved successfully");
-    } catch {
-      alert("Failed to save data");
+    const formatted = `${hh.toString().padStart(2, '0')}:${time.minute.toString().padStart(2, '0')}:${time.second.toString().padStart(2, '0')}`;
+    
+    setFormData(prev => ({
+      ...prev,
+      timeOfBirth: formatted,
+      timeOfBirthPeriod: time.period
+    }));
+  }, [time]);
+
+  const getDaysInMonth = (date: Date) => {
+    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+  };
+
+  const getFirstDayOfMonth = (date: Date) => {
+    return new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+  };
+
+  const handleDateSelect = (day: number) => {
+    const selected = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+    const formattedDate = selected.toISOString().split('T')[0];
+    setFormData({ ...formData, dateOfBirth: formattedDate });
+    setShowCalendarModal(false);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: '' });
     }
   };
 
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+    
+    if (!formData.name.trim()) newErrors.name = 'Name is required';
+    if (!formData.placeOfBirth.trim()) newErrors.placeOfBirth = 'Place of Birth is required';
+    if (!formData.dateOfBirth.trim()) newErrors.dateOfBirth = 'Date of Birth is required';
+    if (!formData.timeOfBirth.trim()) newErrors.timeOfBirth = 'Time of Birth is required';
+    
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/^\S+@\S+$/.test(formData.email)) {
+      newErrors.email = 'Invalid email';
+    }
+
+    return newErrors;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const newErrors = validateForm();
+    
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setErrors({});
+    setLoading(true);
+
+    try {
+      const res = await fetch('/api/save-birth-details', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      if (!res.ok) throw new Error('Failed');
+
+      setShowSuccess(true);
+      setTimeout(() => {
+        setShowSuccess(false);
+        setFormData({
+          name: '',
+          placeOfBirth: '',
+          dateOfBirth: '',
+          timeOfBirth: '',
+          timeOfBirthPeriod: 'AM',
+          email: ''
+        });
+        setTime({ hour: 12, minute: 0, second: 0, period: 'AM' });
+      }, 3000);
+    } catch (err) {
+      setErrors({ submit: 'Failed to save data' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const daysInMonth = getDaysInMonth(currentMonth);
+  const firstDay = getFirstDayOfMonth(currentMonth);
+  const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+
   return (
-    /* Overlay */
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
-
-      {/* Dialog */}
-      <div
-        className="
-          relative w-full max-w-md
-          rounded-2xl px-8 py-7 text-center
-          bg-black/55 backdrop-blur-xl
-          border border-white/20
-          shadow-[0_0_60px_rgba(255,255,255,0.08)]
-          text-white
-        "
-      >
-        {/* Close */}
-        <button
-          onClick={() => history.back()}
-          className="absolute top-4 right-4 text-white/60 hover:text-white transition"
-        >
-          <X size={20} />
-        </button>
-
-        {/* Header */}
-        <p className="text-xs tracking-widest uppercase text-white/60">
-          Pre-Registration
-        </p>
-
-        <h1 className="mt-3 text-2xl font-semibold">
-          Birth Details
-        </h1>
-
-        <p className="mt-3 text-sm text-white/70 leading-relaxed">
-          Enter accurate birth details. This information is used only for analysis.
-        </p>
-
-        {/* Form */}
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="mt-6 space-y-4 text-left"
-        >
-          {/* Name */}
-          <div>
-            <input
-              {...register("name", { required: "Name is required" })}
-              placeholder="Full Name"
-              className="glass-input"
-            />
-            {errors.name && (
-              <p className="mt-1 text-xs text-red-400">
-                {errors.name.message}
-              </p>
-            )}
-          </div>
-
-          {/* Place */}
-          <input
-            {...register("placeOfBirth", { required: true })}
-            placeholder="Place of Birth"
-            className="glass-input"
-          />
-
-          {/* Birth Time with AM/PM */}
-          <div className="grid grid-cols-3 gap-3">
-            <input
-              type="time"
-              {...register("timeOfBirth", { required: true })}
-              className="glass-input col-span-2"
-              placeholder="Birth Time"
-            />
-            <select
-              {...register("timeOfBirthPeriod", { required: true })}
-              className="glass-input"
-            >
-              <option value="AM">AM</option>
-              <option value="PM">PM</option>
-            </select>
-          </div>
-
-          {/* Date of Birth (dd-mm-yyyy format) */}
-          <div>
-            <input
-              type="date"
-              {...register("dateOfBirth", { required: true })}
-              className="glass-input"
-              placeholder="DD-MM-YYYY"
-            />
-          </div>
-
-          {/* Email */}
-          <div>
-            <input
-              type="email"
-              {...register("email", {
-                required: "Email is required",
-                pattern: {
-                  value: /^\S+@\S+$/i,
-                  message: "Invalid email format",
-                },
-              })}
-              placeholder="Gmail Address"
-              className="glass-input"
-            />
-            {errors.email && (
-              <p className="mt-1 text-xs text-red-400">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
-
-          {/* CTA */}
+    <div className="min-h-screen bg-black flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-lg px-4">
+        <div className="relative w-full max-w-md rounded-2xl bg-black/60 backdrop-blur-xl border border-white/15 px-8 py-7 text-white shadow-[0_0_80px_rgba(255,255,255,0.08)]">
+          
           <button
-            type="submit"
-            className="
-              mt-4 w-full rounded-full
-              border border-white/40
-              px-8 py-3 text-sm uppercase tracking-widest
-              text-white/80 transition-all
-              hover:border-white hover:text-white
-              hover:bg-white/5
-              hover:shadow-[0_0_25px_rgba(255,255,255,0.3)]
-            "
+            onClick={() => window.history.back()}
+            className="absolute right-4 top-4 text-white/50 hover:text-white"
           >
-            Submit Details
+            <X size={20} />
           </button>
 
-          <p className="text-center text-[11px] text-white/50">
-            No spam. Only launch updates.
-          </p>
-        </form>
+          <p className="text-[11px] tracking-[0.25em] uppercase text-white/50">Pre-Registration</p>
+          <h1 className="mt-2 text-2xl font-semibold">Birth Details</h1>
+          <p className="mt-2 text-sm text-white/60">Accurate details help generate precise insights.</p>
+
+          <div className="mt-6 space-y-5">
+
+            {/* Name */}
+            <div>
+              <label className="text-xs text-white/60">Full Name</label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                placeholder="Enter your name"
+                className="w-full mt-1 bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-white/50 transition-all"
+              />
+              {errors.name && <p className="text-xs text-red-400 mt-1">{errors.name}</p>}
+            </div>
+
+            {/* Place of Birth */}
+            <div>
+              <label className="text-xs text-white/60">Place of Birth</label>
+              <input
+                type="text"
+                name="placeOfBirth"
+                value={formData.placeOfBirth}
+                onChange={handleInputChange}
+                placeholder="City, Country"
+                className="w-full mt-1 bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-white/50 transition-all"
+              />
+              {errors.placeOfBirth && <p className="text-xs text-red-400 mt-1">{errors.placeOfBirth}</p>}
+            </div>
+
+            {/* Date of Birth */}
+            <div>
+              <label className="text-xs text-white/60">Date of Birth</label>
+              <button
+                type="button"
+                onClick={() => setShowCalendarModal(true)}
+                className="w-full mt-1 bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white text-left flex items-center justify-between hover:bg-white/15 transition-all"
+              >
+                <span className="text-sm">{formData.dateOfBirth || 'Select date'}</span>
+                <CalendarIcon size={16} className="text-white" />
+              </button>
+              {errors.dateOfBirth && <p className="text-xs text-red-400 mt-1">{errors.dateOfBirth}</p>}
+            </div>
+
+            {/* Time of Birth */}
+            <div>
+              <label className="text-xs text-white/60">Time of Birth</label>
+              <button
+                type="button"
+                onClick={() => setShowTimeModal(true)}
+                className="w-full mt-1 bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white text-left flex items-center justify-between hover:bg-white/15 transition-all"
+              >
+                <span className="text-sm">{formData.timeOfBirth || '00:00:00'}</span>
+                <ClockIcon size={16} className="text-white" />
+              </button>
+              {errors.timeOfBirth && <p className="text-xs text-red-400 mt-1">{errors.timeOfBirth}</p>}
+            </div>
+
+            {/* Email */}
+            <div>
+              <label className="text-xs text-white/60">Email</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                placeholder="you@gmail.com"
+                className="w-full mt-1 bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-white/50 transition-all"
+              />
+              {errors.email && <p className="text-xs text-red-400 mt-1">{errors.email}</p>}
+            </div>
+
+            {/* Submit */}
+            <button
+              type="button"
+              onClick={handleSubmit}
+              disabled={loading}
+              className="w-full rounded-full bg-white text-black py-3 text-sm tracking-widest hover:shadow-[0_0_35px_rgba(255,255,255,0.4)] transition disabled:opacity-50"
+            >
+              {loading ? 'Submitting...' : 'Submit Details'}
+            </button>
+
+            <p className="text-center text-[11px] text-white/40">No spam. Only important updates.</p>
+          </div>
+        </div>
       </div>
+
+      {/* Calendar Modal */}
+      {showCalendarModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4 bg-black/70 backdrop-blur-lg"
+             onClick={() => setShowCalendarModal(false)}>
+          <div className="relative w-full max-w-sm rounded-2xl bg-black/60 backdrop-blur-xl border border-white/15 p-6 text-white shadow-[0_0_80px_rgba(255,255,255,0.08)]"
+               onClick={(e) => e.stopPropagation()}>
+            
+            <h2 className="text-white font-semibold text-lg mb-4">Select Date</h2>
+
+            <div className="flex items-center justify-between mb-4">
+              <button
+                type="button"
+                onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))}
+                className="text-white hover:bg-white/10 p-2 rounded transition-all"
+              >
+                ←
+              </button>
+              <span className="text-white text-sm font-medium">
+                {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+              </span>
+              <button
+                type="button"
+                onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))}
+                className="text-white hover:bg-white/10 p-2 rounded transition-all"
+              >
+                →
+              </button>
+            </div>
+
+            <div className="grid grid-cols-7 gap-2 mb-4">
+              {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
+                <div key={day} className="text-center text-gray-400 text-xs font-medium py-2">
+                  {day}
+                </div>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-7 gap-2 mb-6">
+              {Array.from({ length: firstDay }).map((_, i) => (
+                <div key={`empty-${i}`}></div>
+              ))}
+              {days.map(day => (
+                <button
+                  key={day}
+                  type="button"
+                  onClick={() => handleDateSelect(day)}
+                  className="p-2 text-white text-sm rounded hover:bg-white/20 transition-all aspect-square flex items-center justify-center"
+                >
+                  {day}
+                </button>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setShowCalendarModal(false)}
+              className="w-full rounded-full bg-white text-black py-2 text-sm tracking-widest hover:shadow-[0_0_35px_rgba(255,255,255,0.4)] transition"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Time Modal */}
+      {showTimeModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4 bg-black/70 backdrop-blur-lg"
+             onClick={() => setShowTimeModal(false)}>
+          <div className="relative w-full max-w-sm rounded-2xl bg-black/60 backdrop-blur-xl border border-white/15 p-8 text-white shadow-[0_0_80px_rgba(255,255,255,0.08)]"
+               onClick={(e) => e.stopPropagation()}>
+            
+            <h2 className="text-white font-semibold text-lg mb-6 text-center">Set Time of Birth</h2>
+
+            <div className="space-y-6">
+              
+              {/* Time Input */}
+              <div className="flex gap-2 justify-center items-center">
+                <input
+                  type="number"
+                  min="1"
+                  max="12"
+                  value={time.hour}
+                  onChange={(e) => setTime({ ...time, hour: Math.min(12, Math.max(1, parseInt(e.target.value) || 1)) })}
+                  className="w-16 bg-white/10 border border-white/20 rounded px-2 py-3 text-white text-center text-lg focus:outline-none focus:ring-1 focus:ring-white/50"
+                />
+                <span className="text-white text-2xl font-light">:</span>
+                <input
+                  type="number"
+                  min="0"
+                  max="59"
+                  value={time.minute.toString().padStart(2, '0')}
+                  onChange={(e) => setTime({ ...time, minute: Math.min(59, Math.max(0, parseInt(e.target.value) || 0)) })}
+                  className="w-16 bg-white/10 border border-white/20 rounded px-2 py-3 text-white text-center text-lg focus:outline-none focus:ring-1 focus:ring-white/50"
+                />
+                <span className="text-white text-2xl font-light">:</span>
+                <input
+                  type="number"
+                  min="0"
+                  max="59"
+                  value={time.second.toString().padStart(2, '0')}
+                  onChange={(e) => setTime({ ...time, second: Math.min(59, Math.max(0, parseInt(e.target.value) || 0)) })}
+                  className="w-16 bg-white/10 border border-white/20 rounded px-2 py-3 text-white text-center text-lg focus:outline-none focus:ring-1 focus:ring-white/50"
+                />
+              </div>
+
+              {/* AM / PM */}
+              <div className="flex gap-3">
+                {['AM', 'PM'].map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => setTime({ ...time, period: p })}
+                    className={`flex-1 px-4 py-3 rounded-full border font-medium text-sm tracking-widest transition-all ${
+                      time.period === p
+                        ? 'bg-white text-black border-white'
+                        : 'border-white/30 text-white/60 hover:text-white'
+                    }`}
+                  >
+                    {p}
+                  </button>
+                ))}
+              </div>
+
+              {/* Display */}
+              <div className="text-center py-6 border-t border-b border-white/20">
+                <div className="text-4xl font-semibold text-white tracking-wider">{formData.timeOfBirth}</div>
+                <div className="text-sm text-white/60 mt-2">{time.period}</div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setShowTimeModal(false)}
+                className="w-full rounded-full bg-white text-black py-3 text-sm tracking-widest hover:shadow-[0_0_35px_rgba(255,255,255,0.4)] transition"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Success Dialog */}
+      {showSuccess && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4 bg-black/70 backdrop-blur-lg">
+          <div className="relative w-full max-w-xs rounded-2xl bg-black/60 backdrop-blur-xl border border-white/15 p-8 text-white shadow-[0_0_80px_rgba(255,255,255,0.08)] text-center">
+            <div className="mb-4">
+              <div className="w-12 h-12 bg-white/10 border border-white/20 rounded-full mx-auto flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+            </div>
+            <h2 className="text-xl font-semibold text-white mb-2">Success!</h2>
+            <p className="text-gray-300 text-sm mb-4">Your birth details have been submitted successfully.</p>
+            <button
+              type="button"
+              onClick={() => setShowSuccess(false)}
+              className="w-full rounded-full bg-white text-black py-2 text-sm tracking-widest hover:shadow-[0_0_35px_rgba(255,255,255,0.4)] transition"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

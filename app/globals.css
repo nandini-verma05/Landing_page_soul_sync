@@ -23,6 +23,10 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+html, body {
+  height: 100%;
+  min-height: 100%;
+}
 .ss-heading {
   @apply font-light tracking-widest text-white uppercase;
 }

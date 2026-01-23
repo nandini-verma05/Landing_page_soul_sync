@@ -7,25 +7,23 @@ import AboutMission from './components/AboutMission';
 
 export default function Home() {
   return (
-    <main className="snap-y snap-mandatory overflow-y-auto scrollbar-hide">
-      <section className="h-screen snap-start">
+    <main className="snap-y snap-mandatory min-h-screen overflow-y-auto scrollbar-hide scroll-smooth">
+      <section className="h-screen w-full snap-start snap-always">
         <HeroSection />
       </section>
-      <section className="h-screen w-full snap-start flex items-center justify-center overflow-hidden">
-        <div className="w-full h-full">
-          <Video />
-        </div>
+      <section className="h-screen w-full snap-start snap-always flex items-center justify-center overflow-hidden">
+        <Video />
       </section>
-      <section className="snap-start">
+      <section>
         <AboutMission />
       </section>
-      <section className="snap-start">
+      <section>
         <BlogSection />
       </section>
-      <section className="snap-start">
+      <section>
         <FAQsection />
       </section>
-      <section className="snap-start">
+      <section>
         <Footer />
       </section>
     </main>
