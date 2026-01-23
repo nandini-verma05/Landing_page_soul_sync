@@ -239,9 +239,7 @@ It is about knowing yourself well enough to choose wisely.
               {/* Side Text */}
               <div className="space-y-2 sm:space-y-3 md:pl-4">
                 <h3 className="text-lg sm:text-xl md:text-2xl ss-heading">Stars Are Talking—Will You Listen?</h3>
-                <button className="ss-button inline-flex items-center text-blue-400 hover:text-blue-300 transition text-base sm:text-lg">
-                  Learn More <ArrowRight className="ml-2 w-4 h-4" />
-                </button>
+                
               </div>
             </div>
           </div>

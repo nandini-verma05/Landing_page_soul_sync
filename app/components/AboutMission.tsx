@@ -43,19 +43,14 @@ const AboutMission = () => {
     useRevealOnce<HTMLDivElement>();
 
   /* Threads Icon */
-  const ThreadsIcon = () => (
-    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" />
-      <path d="M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6z" />
-    </svg>
-  );
+  
 
   const socialIcons = [
     { icon: Instagram, url: "https://www.instagram.com/_lovitche_" },
     { icon: X, url: "https://x.com/Lovitche_" },
     { icon: Linkedin, url: "https://www.linkedin.com/in/love-mantrraa-385593397" },
     { icon: Facebook, url: "https://www.facebook.com/share/14WWooFre67/" },
-    { icon: ThreadsIcon, url: "https://www.threads.com/@_lovitche_" },
+   
   ];
 
   const openLink = (url: string) => window.open(url, "_blank");

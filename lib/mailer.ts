@@ -23,7 +23,7 @@ export async function sendRegistrationEmail(
         
         <!-- Hero Image / Banner -->
         <div style="text-align: center; margin-bottom: 30px;">
-          <img src="/hero/img1.png" 
+          <img src="https://www.canva.com/design/DAG-yZeh0dU/c2MrouCL_hGT-jPWiKeTYw/edit?utm_content=DAG-yZeh0dU&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" 
                alt="Lovitche Banner" 
                style="width: 100%; max-width: 600px; height: auto; border-radius: 12px; display: block;"
           />
@@ -63,7 +63,7 @@ export async function sendRegistrationEmail(
         <!-- Footer -->
         <div style="text-align: center; color: #888888; font-size: 14px; margin-top: 40px; padding-top: 25px; border-top: 1px solid #eeeeee;">
           <p style="margin: 0;">With love from the Lovitche Team 💜</p>
-          <p style="margin: 8px 0 0;">© ${currentYear} Lovitche • Company No: 9439747992</p>
+         
         </div>
       </div>
     `,

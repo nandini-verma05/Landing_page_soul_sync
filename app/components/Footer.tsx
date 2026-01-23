@@ -40,15 +40,31 @@ export default function Footer() {
     window.open(url, "_blank");
   };
 
-  const handleSubmit = () => {
-    if (email) {
-      setSubmitted(true);
-      setTimeout(() => {
-        setSubmitted(false);
-        setEmail("");
-      }, 3000);
+ const handleSubmit = async () => {
+  if (!email) return;
+
+  try {
+    const res = await fetch("/api/newsletter.tsx", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message || "Subscription failed");
+      return;
     }
-  };
+
+    setSubmitted(true);
+    setEmail("");
+
+    setTimeout(() => setSubmitted(false), 3000);
+  } catch (err) {
+    alert("Something went wrong");
+  }
+};
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") handleSubmit();
