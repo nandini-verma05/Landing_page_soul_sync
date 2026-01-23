@@ -21,13 +21,26 @@ export default function FormPage() {
     timeOfBirthPeriod: 'AM',
     email: ''
   });
-  
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [showCalendarModal, setShowCalendarModal] = useState(false);
-  const [showTimeModal, setShowTimeModal] = useState(false);
-  const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [loading, setLoading] = useState(false);
+const [currentMonth, setCurrentMonth] = useState(new Date());
+const [errors, setErrors] = useState<Record<string, string>>({});
+const [showSuccess, setShowSuccess] = useState(false);
+const [showCalendarModal, setShowCalendarModal] = useState(false);
+const [showTimeModal, setShowTimeModal] = useState(false);
+const [loading, setLoading] = useState(false);
+
+const currentYear = currentMonth.getFullYear();
+const currentMonthIndex = currentMonth.getMonth();
+
+// year range (±60 years from current year)
+const years = Array.from({ length: 120 }, (_, i) => currentYear - 60 + i);
+
+const changeMonth = (offset: number) => {
+  setCurrentMonth(new Date(currentYear, currentMonthIndex + offset, 1));
+};
+
+const changeYear = (year: number) => {
+  setCurrentMonth(new Date(year, currentMonthIndex, 1));
+};
 
   const [time, setTime] = useState({
     hour: 12,
@@ -239,69 +252,109 @@ export default function FormPage() {
         </div>
       </div>
 
-      {/* Calendar Modal */}
-      {showCalendarModal && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 p-4 bg-black/70 backdrop-blur-lg"
-             onClick={() => setShowCalendarModal(false)}>
-          <div className="relative w-full max-w-sm rounded-2xl bg-black/60 backdrop-blur-xl border border-white/15 p-6 text-white shadow-[0_0_80px_rgba(255,255,255,0.08)]"
-               onClick={(e) => e.stopPropagation()}>
-            
-            <h2 className="text-white font-semibold text-lg mb-4">Select Date</h2>
+     {/* Calendar Modal */}
+{showCalendarModal && (
+  <div
+    className="fixed inset-0 flex items-center justify-center z-50 p-4 bg-black/70 backdrop-blur-lg"
+    onClick={() => setShowCalendarModal(false)}
+  >
+    <div
+      className="relative w-full max-w-sm rounded-2xl bg-black/60 backdrop-blur-xl border border-white/15 p-6 text-white shadow-[0_0_80px_rgba(255,255,255,0.08)]"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <h2 className="text-white font-semibold text-lg mb-4">
+        Select Date
+      </h2>
 
-            <div className="flex items-center justify-between mb-4">
+      {/* MONTH + YEAR CONTROLS */}
+      <div className="flex items-center justify-between mb-4 gap-3">
+
+        {/* Month Control */}
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => changeMonth(-1)}
+            className="text-white hover:bg-white/10 p-2 rounded transition"
+          >
+            ←
+          </button>
+
+          <span className="text-sm font-medium min-w-[90px] text-center">
+            {currentMonth.toLocaleString("en-US", {
+              month: "long",
+            })}
+          </span>
+
+          <button
+            type="button"
+            onClick={() => changeMonth(1)}
+            className="text-white hover:bg-white/10 p-2 rounded transition"
+          >
+            →
+          </button>
+        </div>
+
+        {/* Year Scroll */}
+        <div className="relative w-24">
+          <div className="h-20 overflow-y-auto rounded-lg border border-white/15 bg-black/40 scrollbar-hide">
+            {years.map((year) => (
               <button
+                key={year}
                 type="button"
-                onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))}
-                className="text-white hover:bg-white/10 p-2 rounded transition-all"
+                onClick={() => changeYear(year)}
+                className={`w-full py-1 text-sm transition ${
+                  year === currentYear
+                    ? "bg-white text-black font-semibold"
+                    : "text-white hover:bg-white/10"
+                }`}
               >
-                ←
+                {year}
               </button>
-              <span className="text-white text-sm font-medium">
-                {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-              </span>
-              <button
-                type="button"
-                onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))}
-                className="text-white hover:bg-white/10 p-2 rounded transition-all"
-              >
-                →
-              </button>
-            </div>
-
-            <div className="grid grid-cols-7 gap-2 mb-4">
-              {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
-                <div key={day} className="text-center text-gray-400 text-xs font-medium py-2">
-                  {day}
-                </div>
-              ))}
-            </div>
-
-            <div className="grid grid-cols-7 gap-2 mb-6">
-              {Array.from({ length: firstDay }).map((_, i) => (
-                <div key={`empty-${i}`}></div>
-              ))}
-              {days.map(day => (
-                <button
-                  key={day}
-                  type="button"
-                  onClick={() => handleDateSelect(day)}
-                  className="p-2 text-white text-sm rounded hover:bg-white/20 transition-all aspect-square flex items-center justify-center"
-                >
-                  {day}
-                </button>
-              ))}
-            </div>
-
-            <button
-              type="button"
-              onClick={() => setShowCalendarModal(false)}
-              className="w-full rounded-full bg-white text-black py-2 text-sm tracking-widest hover:shadow-[0_0_35px_rgba(255,255,255,0.4)] transition"
-            >
-              Close
-            </button>
+            ))}
           </div>
         </div>
-      )}
+      </div>
+
+      {/* WEEK DAYS */}
+      <div className="grid grid-cols-7 gap-2 mb-2">
+        {["S", "M", "T", "W", "T", "F", "S"].map((day) => (
+          <div
+            key={day}
+            className="text-center text-gray-400 text-xs font-medium py-2"
+          >
+            {day}
+          </div>
+        ))}
+      </div>
+
+      {/* DATES */}
+      <div className="grid grid-cols-7 gap-2 mb-6">
+        {Array.from({ length: firstDay }).map((_, i) => (
+          <div key={`empty-${i}`} />
+        ))}
+
+        {days.map((day) => (
+          <button
+            key={day}
+            type="button"
+            onClick={() => handleDateSelect(day)}
+            className="p-2 text-white text-sm rounded hover:bg-white/20 transition aspect-square flex items-center justify-center"
+          >
+            {day}
+          </button>
+        ))}
+      </div>
+
+      <button
+        type="button"
+        onClick={() => setShowCalendarModal(false)}
+        className="w-full rounded-full bg-white text-black py-2 text-sm tracking-widest hover:shadow-[0_0_35px_rgba(255,255,255,0.4)] transition"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+)}
 
       {/* Time Modal */}
       {showTimeModal && (

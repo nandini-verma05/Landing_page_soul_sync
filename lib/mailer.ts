@@ -41,11 +41,7 @@ export async function sendRegistrationEmail(
             <strong>Aligning stars, connecting people</strong> — and now you're part of this beautiful journey ✨
           </p>
 
-          <div style="background: linear-gradient(135deg, #6B48FF, #9D7CFF); color: white; padding: 20px; border-radius: 10px; margin: 30px 0;">
-            <p style="margin: 0; font-size: 18px;">
-              Company No: <strong>9439747992</strong>
-            </p>
-          </div>
+         
         </div>
 
         <!-- Social Media Icons -->
