@@ -212,7 +212,7 @@ export default function Footer() {
         <div className="relative z-10">
 
           {/* -------- NEWSLETTER -------- */}
-          <div className="text-center px-6 py-16 md:py-20">
+          {/* <div className="text-center px-6 py-16 md:py-20">
             <h2 className="text-3xl md:text-4xl lg:text-5xl ss-heading mb-8 md:mb-12">
               Subscribe to Our Newsletter
             </h2>
@@ -232,7 +232,7 @@ export default function Footer() {
               >
                 <Mail className="w-6 h-6 " />
               </button>
-            </div>
+            </div> */}
 
             {submitted && (
               <p className="mt-4 text-green-400">Thank you for subscribing!</p>
@@ -335,7 +335,7 @@ export default function Footer() {
               © 2025 Lovitché. All rights reserved. Find your perfect match.
             </div>
           </div>
-        </div>
+       
       </footer>
     </>
   );
