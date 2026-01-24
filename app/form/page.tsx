@@ -72,12 +72,20 @@ const changeYear = (year: number) => {
     return new Date(date.getFullYear(), date.getMonth(), 1).getDay();
   };
 
-  const handleDateSelect = (day: number) => {
-    const selected = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
-    const formattedDate = selected.toISOString().split('T')[0];
-    setFormData({ ...formData, dateOfBirth: formattedDate });
-    setShowCalendarModal(false);
-  };
+const handleDateSelect = (day: number) => {
+  const selected = new Date(
+    currentMonth.getFullYear(),
+    currentMonth.getMonth(),
+    day,
+    12, 0, 0 // ✅ force noon to avoid timezone shift
+  );
+
+  const formattedDate = selected.toISOString().split("T")[0];
+
+  setFormData({ ...formData, dateOfBirth: formattedDate });
+  setShowCalendarModal(false);
+};
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
