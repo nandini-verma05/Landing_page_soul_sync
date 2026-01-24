@@ -86,12 +86,12 @@ export default function VideoCarousel() {
             </p>
 
             <h2 className="mt-3 text-2xl md:text-3xl font-semibold text-white">
-              We're testing something special
+              Were testing something special
             </h2>
 
             <p className="mt-4 text-sm text-white/70 leading-relaxed">
               This is an early access test.
-              Pre-register now and we'll notify you the moment we go live.
+              Pre-register now and well notify you the moment we go live.
             </p>
 
             <button
