@@ -65,7 +65,7 @@ export async function POST(req: Request) {
       { success: true, message: "Registered successfully" },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error) {
     console.error("Registration error:", error);
     return NextResponse.json(
       { success: false, message: "Failed to save data" },
