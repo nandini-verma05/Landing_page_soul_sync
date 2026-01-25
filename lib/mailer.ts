@@ -36,7 +36,7 @@ export async function sendRegistrationEmail(
         
         <div style="text-align:center; margin-bottom: 24px;">
           <img
-            src="https://your-cdn.com/lovitche-banner.png"
+            src="https://www.xn--lovitch-hya.com/banner.png"
             alt="Lovitche"
             style="width:100%; max-width:600px; border-radius:12px;"
           />
