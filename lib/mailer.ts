@@ -85,8 +85,7 @@ export async function sendNewsletterWelcomeEmail(
           <img
             src="https://www.xn--lovitch-hya.com/mailimg.jpeg"
             alt="Lovitche Logo"
-            width="96"
-            style="border-radius:12px;"
+            style="width:100%; max-width:600px; border-radius:12px;"
           />
         </div>
 
