@@ -378,16 +378,17 @@ const handleDateSelect = (day: number) => {
               {/* Time Input */}
               <div className="flex gap-2 justify-center items-center">
                 <input
-                  type="number"
-                  min="1"
-                  max="12"
+                  type="text"
+                  inputMode="numeric"
+                 
                   value={time.hour}
                   onChange={(e) => setTime({ ...time, hour: Math.min(12, Math.max(1, parseInt(e.target.value) || 1)) })}
                   className="w-16 bg-white/10 border border-white/20 rounded px-2 py-3 text-white text-center text-lg focus:outline-none focus:ring-1 focus:ring-white/50"
                 />
                 <span className="text-white text-2xl font-light">:</span>
                 <input
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
                   min="0"
                   max="59"
                   value={time.minute.toString().padStart(2, '0')}
@@ -421,7 +422,7 @@ const handleDateSelect = (day: number) => {
                     {p}
                   </button>
                 ))}
-              </div>
+              </div> 
 
               {/* Display */}
               <div className="text-center py-6 border-t border-b border-white/20">
