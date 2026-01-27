@@ -366,81 +366,111 @@ const handleDateSelect = (day: number) => {
 
       {/* Time Modal */}
       {showTimeModal && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 p-4 bg-black/70 backdrop-blur-lg"
-             onClick={() => setShowTimeModal(false)}>
-          <div className="relative w-full max-w-sm rounded-2xl bg-black/60 backdrop-blur-xl border border-white/15 p-8 text-white shadow-[0_0_80px_rgba(255,255,255,0.08)]"
-               onClick={(e) => e.stopPropagation()}>
-            
-            <h2 className="text-white font-semibold text-lg mb-6 text-center">Set Time of Birth</h2>
+  <div
+    className="fixed inset-0 flex items-center justify-center z-50 p-4 bg-black/70 backdrop-blur-lg"
+    onClick={() => setShowTimeModal(false)}
+  >
+    <div
+      className="relative w-full max-w-sm rounded-2xl bg-black/60 backdrop-blur-xl border border-white/15 p-8 text-white shadow-[0_0_80px_rgba(255,255,255,0.08)]"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <h2 className="font-semibold text-lg mb-6 text-center">
+        Set Time of Birth
+      </h2>
 
-            <div className="space-y-6">
-              
-              {/* Time Input */}
-              <div className="flex gap-2 justify-center items-center">
-                <input
-                  type="text"
-                  inputMode="numeric"
-                 
-                  value={time.hour}
-                  onChange={(e) => setTime({ ...time, hour: Math.min(12, Math.max(1, parseInt(e.target.value) || 1)) })}
-                  className="w-16 bg-white/10 border border-white/20 rounded px-2 py-3 text-white text-center text-lg focus:outline-none focus:ring-1 focus:ring-white/50"
-                />
-                <span className="text-white text-2xl font-light">:</span>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  min="0"
-                  max="59"
-                  value={time.minute.toString().padStart(2, '0')}
-                  onChange={(e) => setTime({ ...time, minute: Math.min(59, Math.max(0, parseInt(e.target.value) || 0)) })}
-                  className="w-16 bg-white/10 border border-white/20 rounded px-2 py-3 text-white text-center text-lg focus:outline-none focus:ring-1 focus:ring-white/50"
-                />
-                <span className="text-white text-2xl font-light">:</span>
-                <input
-                  type="number"
-                  min="0"
-                  max="59"
-                  value={time.second.toString().padStart(2, '0')}
-                  onChange={(e) => setTime({ ...time, second: Math.min(59, Math.max(0, parseInt(e.target.value) || 0)) })}
-                  className="w-16 bg-white/10 border border-white/20 rounded px-2 py-3 text-white text-center text-lg focus:outline-none focus:ring-1 focus:ring-white/50"
-                />
-              </div>
+      <div className="space-y-6">
+        {/* Time Inputs */}
+        <div className="flex gap-2 justify-center items-center">
+          {/* Hour */}
+          <input
+            type="text"
+            inputMode="numeric"
+            placeholder="HH"
+            value={time.hour}
+            onChange={(e) => {
+              const v = e.target.value.replace(/\D/g, "");
+              if (v === "") return setTime({ ...time, hour: "" });
+              const num = Math.min(12, Math.max(1, Number(v)));
+              setTime({ ...time, hour: num });
+            }}
+            className="w-16 bg-white/10 border border-white/20 rounded px-2 py-3 text-center text-lg"
+          />
 
-              {/* AM / PM */}
-              <div className="flex gap-3">
-                {['AM', 'PM'].map((p) => (
-                  <button
-                    key={p}
-                    type="button"
-                    onClick={() => setTime({ ...time, period: p })}
-                    className={`flex-1 px-4 py-3 rounded-full border font-medium text-sm tracking-widest transition-all ${
-                      time.period === p
-                        ? 'bg-white text-black border-white'
-                        : 'border-white/30 text-white/60 hover:text-white'
-                    }`}
-                  >
-                    {p}
-                  </button>
-                ))}
-              </div> 
+          <span className="text-2xl">:</span>
 
-              {/* Display */}
-              <div className="text-center py-6 border-t border-b border-white/20">
-                <div className="text-4xl font-semibold text-white tracking-wider">{formData.timeOfBirth}</div>
-                <div className="text-sm text-white/60 mt-2">{time.period}</div>
-              </div>
+          {/* Minute */}
+          <input
+            type="text"
+            inputMode="numeric"
+            placeholder="MM"
+            value={time.minute}
+            onChange={(e) => {
+              const v = e.target.value.replace(/\D/g, "");
+              if (v === "") return setTime({ ...time, minute: "" });
+              const num = Math.min(59, Math.max(0, Number(v)));
+              setTime({ ...time, minute: num });
+            }}
+            className="w-16 bg-white/10 border border-white/20 rounded px-2 py-3 text-center text-lg"
+          />
 
-              <button
-                type="button"
-                onClick={() => setShowTimeModal(false)}
-                className="w-full rounded-full bg-white text-black py-3 text-sm tracking-widest hover:shadow-[0_0_35px_rgba(255,255,255,0.4)] transition"
-              >
-                Done
-              </button>
-            </div>
+          <span className="text-2xl">:</span>
+
+          {/* Second */}
+          <input
+            type="text"
+            inputMode="numeric"
+            placeholder="SS"
+            value={time.second}
+            onChange={(e) => {
+              const v = e.target.value.replace(/\D/g, "");
+              if (v === "") return setTime({ ...time, second: "" });
+              const num = Math.min(59, Math.max(0, Number(v)));
+              setTime({ ...time, second: num });
+            }}
+            className="w-16 bg-white/10 border border-white/20 rounded px-2 py-3 text-center text-lg"
+          />
+        </div>
+
+        {/* AM / PM */}
+        <div className="flex gap-3">
+          {["AM", "PM"].map((p) => (
+            <button
+              key={p}
+              onClick={() => setTime({ ...time, period: p })}
+              className={`flex-1 py-3 rounded-full border text-sm tracking-widest ${
+                time.period === p
+                  ? "bg-white text-black border-white"
+                  : "border-white/30 text-white/60"
+              }`}
+            >
+              {p}
+            </button>
+          ))}
+        </div>
+
+        {/* Display (formatted safely) */}
+        <div className="text-center py-6 border-t border-b border-white/20">
+          <div className="text-4xl font-semibold tracking-wider">
+            {String(time.hour || "00").padStart(2, "0")}:
+            {String(time.minute || "00").padStart(2, "0")}:
+            {String(time.second || "00").padStart(2, "0")}
+          </div>
+          <div className="text-sm text-white/60 mt-2">
+            {time.period}
           </div>
         </div>
-      )}
+
+        <button
+          onClick={() => setShowTimeModal(false)}
+          className="w-full rounded-full bg-white text-black py-3 text-sm tracking-widest"
+        >
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
 
       {/* Success Dialog */}
       {showSuccess && (
