@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { ArrowRight, X } from "lucide-react";
 
 interface BlogPost {
@@ -204,7 +204,7 @@ It is about knowing yourself well enough to choose wisely.
                 <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl ss-heading">
                   {blogPosts[0].title}
                 </h3>
-                <button 
+                <button
                   onClick={() => openModal(blogPosts[0])}
                   className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 bg-white/90 rounded-full flex items-center justify-center mt-auto group-hover:scale-110 transition"
                 >
@@ -228,7 +228,7 @@ It is about knowing yourself well enough to choose wisely.
                   <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl ss-heading">
                     {blogPosts[1].title}
                   </h3>
-                  <button 
+                  <button
                     onClick={() => openModal(blogPosts[1])}
                     className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 bg-white/90 rounded-full flex items-center justify-center mt-auto group-hover:scale-110 transition"
                   >
@@ -239,7 +239,7 @@ It is about knowing yourself well enough to choose wisely.
               {/* Side Text */}
               <div className="space-y-2 sm:space-y-3 md:pl-4">
                 <h3 className="text-lg sm:text-xl md:text-2xl ss-heading">Stars Are Talking—Will You Listen?</h3>
-                
+
               </div>
             </div>
           </div>
@@ -259,7 +259,7 @@ It is about knowing yourself well enough to choose wisely.
                   <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl ss-heading">
                     {post.title}
                   </h3>
-                  <button 
+                  <button
                     onClick={() => openModal(post)}
                     className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 bg-white/90 rounded-full flex items-center justify-center mt-auto group-hover:scale-110 transition"
                   >
@@ -310,7 +310,7 @@ It is about knowing yourself well enough to choose wisely.
 
                 {/* Article Content */}
                 <div className="p-6 sm:p-8 md:p-12 lg:p-16">
-                  <div 
+                  <div
                     className="prose prose-invert prose-lg max-w-none"
                     dangerouslySetInnerHTML={{ __html: selectedPost.content }}
                     style={{
