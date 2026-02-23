@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Calendar as CalendarIcon, Clock as ClockIcon, X } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 type FormData = {
   name: string;
@@ -13,6 +14,7 @@ type FormData = {
 };
 
 export default function FormPage() {
+  const router = useRouter();
   const [formData, setFormData] = useState<FormData>({
     name: '',
     placeOfBirth: '',
@@ -150,6 +152,8 @@ const handleDateSelect = (day: number) => {
       setErrors({ submit: 'Failed to save data' });
     } finally {
       setLoading(false);
+      router.push("/")
+
     }
   };
 
@@ -325,9 +329,9 @@ const handleDateSelect = (day: number) => {
 
       {/* WEEK DAYS */}
       <div className="grid grid-cols-7 gap-2 mb-2">
-        {["S", "M", "T", "W", "T", "F", "S"].map((day) => (
+        {["S", "M", "T", "W", "T", "F", "S"].map((day,index) => (
           <div
-            key={day}
+            key={index}
             className="text-center text-gray-400 text-xs font-medium py-2"
           >
             {day}
@@ -389,7 +393,7 @@ const handleDateSelect = (day: number) => {
             value={time.hour}
             onChange={(e) => {
               const v = e.target.value.replace(/\D/g, "");
-              if (v === "") return setTime({ ...time, hour: "" });
+              if (v === "") return setTime({ ...time, hour:0 });
               const num = Math.min(12, Math.max(1, Number(v)));
               setTime({ ...time, hour: num });
             }}
@@ -406,7 +410,7 @@ const handleDateSelect = (day: number) => {
             value={time.minute}
             onChange={(e) => {
               const v = e.target.value.replace(/\D/g, "");
-              if (v === "") return setTime({ ...time, minute: "" });
+              if (v === "") return setTime({ ...time, minute:0 });
               const num = Math.min(59, Math.max(0, Number(v)));
               setTime({ ...time, minute: num });
             }}
@@ -423,7 +427,7 @@ const handleDateSelect = (day: number) => {
             value={time.second}
             onChange={(e) => {
               const v = e.target.value.replace(/\D/g, "");
-              if (v === "") return setTime({ ...time, second: "" });
+              if (v === "") return setTime({ ...time, second: 0 });
               const num = Math.min(59, Math.max(0, Number(v)));
               setTime({ ...time, second: num });
             }}
