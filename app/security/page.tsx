@@ -1,13 +1,13 @@
 
-function Heading({ children }) {
+function Heading({ children }: { children: React.ReactNode }) {
   return <h2 className="text-2xl font-bold mt-12 mb-4">{children}</h2>;
 }
 
-function SubHeading({ children }) {
+function SubHeading({ children }: { children: React.ReactNode }) {
   return <h3 className="text-xl font-semibold mt-8 mb-3">{children}</h3>;
 }
 
-function Section({ children }) {
+function Section({ children }: { children: React.ReactNode }) {
   return <p className="mb-6 leading-relaxed">{children}</p>;
 }
 export const metadata = {

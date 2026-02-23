@@ -1,5 +1,5 @@
 
-function Section({ title, children }) {
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur-md shadow-lg">
       <h2 className="text-2xl font-semibold text-white mb-6">{title}</h2>
@@ -8,7 +8,7 @@ function Section({ title, children }) {
   );
 }
 
-function Tip({ title, text }) {
+function Tip({ title, text }: { title: string; text: string }) {
   return (
     <div>
       <h3 className="font-semibold text-white mb-2">{title}</h3>
@@ -17,7 +17,7 @@ function Tip({ title, text }) {
   );
 }
 
-function Bullet({ title, items }) {
+function Bullet({ title, items }: { title: string; items: string[] }) {
   return (
     <div>
       <h3 className="font-semibold text-white mb-2">{title}</h3>
