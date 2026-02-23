@@ -128,7 +128,7 @@ export default function Footer() {
 
               {/* BRAND */}
               <div className="text-center">
-                <h1 className="text-5xl ss-heading mb-3">LovitchÃ©</h1>
+                <h1 className="text-5xl ss-heading mb-3">Lovitché</h1>
                 <p className="text-lg italic mb-8">alinging stars , connecting souls</p>
 
                 <h3 className="text-sm tracking-widest text-white/80 mb-4">
@@ -196,6 +196,8 @@ export default function Footer() {
       { icon: Lock, text: "Privacy Policy", path: "/privacy-policy" },
       { icon: FileText, text: "Terms & Conditions", path: "/terms-and-conditions" },
       { icon: Shield, text: "Community Guidelines", path: "/security" },
+       { icon: Shield, text: "Cookie Policy", path: "/cookie-policies" },
+
     ].map((item, index) => (
       <li key={index}>
         <Link
@@ -215,7 +217,7 @@ export default function Footer() {
 
             {/* COPYRIGHT */}
             <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-white/10 text-center text-sm">
-              Â© 2025 LovitchÃ©. All rights reserved. Find your perfect match.
+              Â© 2025 Lovitché©. All rights reserved. Find your perfect match.
             </div>
           </div>
        
