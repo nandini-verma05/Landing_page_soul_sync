@@ -56,7 +56,7 @@ const AboutMission = () => {
   const openLink = (url: string) => window.open(url, "_blank");
 
   return (
-    <main className="relative flex flex-col overflow-hidden">
+    <main className="relative flex flex-col overflow-hidden bg-black">
 
       {/* ================= ABOUT SECTION ================= */}
       <section
